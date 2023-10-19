@@ -1,16 +1,28 @@
-# endurance
+# Expenso
 
-Endurance
+Expenso
 
 ## Getting Started
+Step-1 - Run Fortuna-User-Authentication using the same steps as per repo
 
-This project is a starting point for a Flutter application.
+Step-2 - Clone this repo to your desktop or laptop. (App Name-Endurance) main branch name Fortuna Mobile main
 
-A few resources to get you started if this is your first Flutter project:
+Step-3 - Now in android studio/vs.code run the main.dart file
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Remember to have a phone connected either via emulation or by direct connection to mobile via cable or IP.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Step-4 - After this for the login page either login from your server ID
+
+Or use hardcoded authentication
+
+Username: Chinmay
+
+Password: Cr7
+
+for admin login
+
+Username: admin
+
+Password: admin
+
+After this, you will land in home page which consists of Dashboard as 1st screen followed by timer, Present List, Expense Tracker.
