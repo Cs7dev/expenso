@@ -40,7 +40,7 @@ class _CategoryIconState extends State<CategoryIcon> {
               ),
               Text(
                 widget.label,
-                textScaleFactor: 0.9,
+                textScaleFactor: 0.7,
                 textAlign: TextAlign.center,
                 style: TextStyle(),
               ), // Todo: Use a condensed font/ make font condensed

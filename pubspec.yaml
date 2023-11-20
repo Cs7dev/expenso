@@ -41,6 +41,11 @@ dependencies:
   http: ^0.13.3
   animated_text_kit: ^4.2.2
   intl: ^0.17.0
+  image_picker: ^0.8.0
+  dependencies:
+  permission_handler: ^11.0.1
+
+
 
 
 

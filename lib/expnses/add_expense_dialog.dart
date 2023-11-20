@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'category_icons.dart';
 import 'switchtile.dart';
@@ -48,6 +51,7 @@ class _AddExpenseDialogState extends State<AddExpenseDialog>
   Color? categoryColor;
 
   DateTime selectedDate = DateTime.now();
+  File? _selectedImage;
 
   @override
   void initState() {
@@ -76,6 +80,23 @@ class _AddExpenseDialogState extends State<AddExpenseDialog>
     tagController.dispose();
     super.dispose();
   }
+  Future<void> _pickImage() async {
+    PermissionStatus status = await Permission.camera.request();
+
+    if (status.isGranted) {
+      final pickedFile = await ImagePicker().getImage(source: ImageSource.camera);
+
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+        });
+      }
+    } else {
+      print('Camera permission denied');
+    }
+
+}
+
 
   // Widget _buildCategoryButton(
   //     String categoryName, Color categoryColor, IconData categoryIcon) {
@@ -191,6 +212,7 @@ class _AddExpenseDialogState extends State<AddExpenseDialog>
         'selectedDate': selectedDate,
         'notes': notes,
         'tags': tags,
+        'image': _selectedImage,
         // 'categoryLabel': categoryLabel,
       });
     }
@@ -295,6 +317,16 @@ class _AddExpenseDialogState extends State<AddExpenseDialog>
                   children: categories,
                 ),
               ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.image),
+                title: Text('Add Image'),
+                onTap: () async => await _pickImage(),
+              ),
+
+              _selectedImage != null
+                  ? Image.file(_selectedImage!, height: 100, width: 100)
+                  : Container(),
               const Divider(),
 
               Padding(
