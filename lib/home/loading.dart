@@ -56,16 +56,25 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset('videos/app.mp4')
+    _controller = VideoPlayerController.asset('videos/app1.mp4')
       ..initialize().then((_) {
         setState(() {
           _initialized = true;
         });
       })
-      ..setLooping(true)
+      ..setLooping(false)
       ..play();
   }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Future.delayed(Duration(seconds: 6), () {
 
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    });
+  }
   @override
   void dispose() {
     _controller.dispose();
@@ -75,7 +84,7 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white60,
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
