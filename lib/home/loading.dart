@@ -56,7 +56,7 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset('videos/app1.mp4')
+    _controller = VideoPlayerController.asset('videos/sa.mp4')
       ..initialize().then((_) {
         setState(() {
           _initialized = true;
