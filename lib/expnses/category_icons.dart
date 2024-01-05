@@ -1,13 +1,17 @@
-import 'package:Expenso/expnses/expense.dart';
 import 'package:flutter/material.dart';
 
 class CategoryIcon extends StatefulWidget {
-  final CategoryIconData categoryIconData;
-
+  final IconData icon;
+  final String label;
+  final Color? color;
   final Function? onTap;
+  final Color? backgroundColor;
 
   const CategoryIcon({
-    required this.categoryIconData,
+    required this.icon,
+    required this.label,
+    this.color,
+    this.backgroundColor,
     this.onTap,
     super.key,
   });
@@ -17,13 +21,6 @@ class CategoryIcon extends StatefulWidget {
 }
 
 class _CategoryIconState extends State<CategoryIcon> {
-  late int? backgroundColorValue = widget.categoryIconData.backgroundColorValue;
-  late Color? backgroundColor =
-      backgroundColorValue == null ? null : Color(backgroundColorValue!);
-
-  late int? colorValue = widget.categoryIconData.colorValue;
-  late Color? color = colorValue == null ? null : Color(colorValue!);
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -31,19 +28,18 @@ class _CategoryIconState extends State<CategoryIcon> {
         widget.onTap?.call();
       }),
       child: Container(
-        color: backgroundColor,
+        color: widget.backgroundColor,
         child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(
-                IconData(widget.categoryIconData.iconDataCodepoint!,
-                    fontFamily: 'MaterialIcons'),
-                color: color,
+                widget.icon,
+                color: widget.color,
               ),
               Text(
-                widget.categoryIconData.label!,
+                widget.label,
                 textScaleFactor: 0.7,
                 textAlign: TextAlign.center,
                 style: TextStyle(),
