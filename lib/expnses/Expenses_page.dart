@@ -1,62 +1,41 @@
+import 'package:Expenso/expnses/transaction_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:Expenso/expnses/add_expense_dialog.dart';
 
-import 'category_icons.dart';
-
-class Expenses {
-  final double amount;
-  final String description;
-  final DateTime selectedDate;
-  final String notes;
-  final String tags;
-  final CategoryIcon category;
-
-  Expenses({
-    required this.amount,
-    required this.tags,
-    required this.notes,
-    required this.selectedDate,
-    required this.description,
-    required this.category,
-  });
-}
+import 'expense.dart';
 
 class ExpensesPage extends StatefulWidget {
   final String username;
+  final TransactionList list;
 
-  ExpensesPage({required this.username});
+  ExpensesPage({
+    super.key,
+    required this.username,
+    required this.list,
+  });
 
   @override
-  _ExpensePageAppState createState() => _ExpensePageAppState();
+  State<ExpensesPage> createState() => _ExpensesPageState();
 }
 
-class _ExpensePageAppState extends State<ExpensesPage> {
-  final List<Expenses> _expenses = [];
-
+class _ExpensesPageState extends State<ExpensesPage> {
   void _addExpense(Map result) {
-    setState(() {
-      _expenses.add(Expenses(
-        amount: result['amount'],
-        description: result['description'],
-        selectedDate: result['selectedDate'],
-        notes: result['notes'],
-        tags: result['tags'],
-        category: result['category'],
-      ));
-    });
-  }
-
-  void _removeExpenses(int index) {
-    setState(() {
-      _expenses.removeAt(index);
-    });
+    widget.list.add(Expense(
+      amount: result['amount'],
+      description: result['description'],
+      selectedDate: result['selectedDate'],
+      notes: result['notes'],
+      tags: result['tags'],
+      category: result['category'].categoryIconData,
+    ));
+    widget.list.save();
   }
 
   double _calculateTotalAmount() {
     double total = 0;
-    for (var expense in _expenses) {
-      total += expense.amount;
+    for (var expense in widget.list.list) {
+      total += expense.amount!;
     }
     return total;
   }
@@ -67,31 +46,32 @@ class _ExpensePageAppState extends State<ExpensesPage> {
   }
 
   void sortTransactions(FilterOption filterBy) {
+    switch (filterBy) {
+      case FilterOption.day:
+        widget.list.sort(
+          (a, b) => sortOrder(a.selectedDate!.compareTo(b.selectedDate!)),
+        );
+        break;
+      case FilterOption.name:
+        widget.list.sort((a, b) => sortOrder(
+              a.description!
+                  .toLowerCase()
+                  .compareTo(b.description!.toLowerCase()),
+            ));
+        break;
+      case FilterOption.price:
+        widget.list.sort(
+          (a, b) => sortOrder(a.amount!.compareTo(b.amount!)),
+        );
+        break;
+    }
     setState(() {
-      switch (filterBy) {
-        case FilterOption.day:
-          _expenses.sort(
-            (a, b) => sortOrder(a.selectedDate.compareTo(b.selectedDate)),
-          );
-          break;
-        case FilterOption.name:
-          _expenses.sort((a, b) => sortOrder(
-                a.description
-                    .toLowerCase()
-                    .compareTo(b.description.toLowerCase()),
-              ));
-          break;
-        case FilterOption.price:
-          _expenses.sort(
-            (a, b) => sortOrder(a.amount.compareTo(b.amount)),
-          );
-          break;
-      }
       ascendingSort = !ascendingSort;
     });
   }
 
   FilterOption sortBy = FilterOption.price;
+
   bool ascendingSort = true;
 
   @override
@@ -134,7 +114,6 @@ class _ExpensePageAppState extends State<ExpensesPage> {
                   context: context,
                   builder: (context) => FilterDialog(defaultChoice: sortBy),
                 );
-
                 setState(() {
                   sortBy = filterChioce;
                   ascendingSort = true;
@@ -203,9 +182,9 @@ class _ExpensePageAppState extends State<ExpensesPage> {
             Expanded(
               child: ListView.separated(
                 separatorBuilder: (context, index) => const Divider(height: 8),
-                itemCount: _expenses.length,
+                itemCount: widget.list.list.length,
                 itemBuilder: (context, index) {
-                  final expense = _expenses[index];
+                  final expense = widget.list.list[index];
                   return ListTile(
                     leading: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -219,25 +198,31 @@ class _ExpensePageAppState extends State<ExpensesPage> {
                           ),
                           padding: const EdgeInsets.all(4),
                           child: Icon(
-                            expense.category.icon,
-                            color: expense.category.color,
+                            IconData(
+                              expense.category!.iconDataCodepoint!,
+                              fontFamily: 'MaterialIcons',
+                            ),
+                            color: expense.category!.colorValue == null
+                                ? null
+                                : Color(expense.category!.colorValue!),
                           ),
                         )
                       ],
                     ),
-                    title: Text(expense.description),
+                    title: Text(expense.description!),
                     subtitle: Row(
                       children: [
-                        if (expense.tags.isNotEmpty)
+                        if (expense.tags != null && expense.tags!.isNotEmpty)
                           Text(
-                            expense.tags,
+                            expense.tags!,
                             style: TextStyle(color: Colors.grey.shade600),
                           ),
-                        Text(
-                          expense.notes,
-                          style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: 12),
-                        ),
+                        if (expense.notes != null && expense.notes!.isNotEmpty)
+                          Text(
+                            expense.notes!,
+                            style: TextStyle(
+                                color: Colors.grey.shade600, fontSize: 12),
+                          ),
                       ],
                     ),
                     trailing: Column(
@@ -249,7 +234,7 @@ class _ExpensePageAppState extends State<ExpensesPage> {
                           children: [
                             Text(
                               DateFormat("dd MMM ''yy")
-                                  .format(expense.selectedDate),
+                                  .format(expense.selectedDate!),
                               style: TextStyle(color: Colors.grey.shade600),
                             ),
                             const Icon(

@@ -1,20 +1,22 @@
 import 'package:Expenso/dashboard/login_page.dart';
-import 'package:Expenso/preset/preset_list/preset_list_page.dart';
-import 'package:Expenso/dashboard/dashboard_page.dart';
 import 'package:Expenso/theme/Settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:Expenso/timer/timer_page.dart';
 import 'package:Expenso/expnses/Expenses_page.dart';
+import 'package:provider/provider.dart';
 
+import '../expnses/transaction_list_model.dart';
 import '../total_summary.dart';
+
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title, required this.username}) : super(key: key);
+  const HomePage({Key? key, required this.title, required this.username})
+      : super(key: key);
   final String title;
   final String username;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
+
 //
 // class _HomePageState extends State<HomePage> {
 //   int _currentIndex = 0;
@@ -96,7 +98,9 @@ class _HomePageState extends State<HomePage> {
       // DashboardPage(username: widget.username),
       // const PresetListPage(),
       // TimerPage(),
-      ExpensesPage(username: widget.username),
+      Consumer<TransactionList>(
+          builder: (context, transactionList, child) =>
+              ExpensesPage(username: widget.username, list: transactionList)),
       SettingsPage(),
       LoginPage(),
       const Center(child: Text('Perform preset')),
@@ -144,7 +148,6 @@ class _HomePageState extends State<HomePage> {
           //   icon: Icon(Icons.wallet_outlined),
           //   label: 'Entry',
           // ),
-
         ],
       ),
     );
@@ -156,5 +159,3 @@ class _HomePageState extends State<HomePage> {
     });
   }
 }
-
-
