@@ -1,3 +1,4 @@
+import 'package:Expenso/expnses/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
@@ -19,19 +20,6 @@ class AddExpenseDialog extends StatefulWidget {
 
   @override
   _AddExpenseDialogState createState() => _AddExpenseDialogState();
-}
-
-class Expenses {
-  final String title;
-  final double amount;
-  final String categoryLabel;
-  final Color categoryColor;
-  final IconData categoryIcon;
-  final DateTime expenseDate;
-  final String description;
-
-  Expenses(this.title, this.amount, this.categoryLabel, this.categoryColor,
-      this.categoryIcon, this.expenseDate, this.description);
 }
 
 class _AddExpenseDialogState extends State<AddExpenseDialog>
@@ -98,48 +86,66 @@ class _AddExpenseDialogState extends State<AddExpenseDialog>
   }
 
   late List<CategoryIcon> categories = [
-    const CategoryIcon(
-      icon: Icons.signal_cellular_alt,
-      label: 'EMI',
-    ),
-    const CategoryIcon(
-      icon: Icons.star,
-      label: 'Entertainment',
-      color: Colors.blue,
-    ),
-    const CategoryIcon(
-      icon: Icons.restaurant,
-      label: 'Food & Drinks',
-      color: Colors.pink,
-    ),
-    const CategoryIcon(
-      icon: Icons.local_gas_station,
-      label: 'Fuel',
-      color: Colors.orange,
+    CategoryIcon(
+      categoryIconData: CategoryIconData(
+        iconDataCodepoint: Icons.signal_cellular_alt.codePoint,
+        label: 'EMI',
+      ),
     ),
     CategoryIcon(
-      icon: Icons.medical_services,
-      label: 'Health',
-      color: Colors.yellow.shade600,
+      categoryIconData: CategoryIconData(
+        iconDataCodepoint: Icons.star.codePoint,
+        label: 'Entertainment',
+        colorValue: Colors.blue.value,
+      ),
     ),
-    const CategoryIcon(
-      icon: Icons.more_horiz,
-      label: 'Others',
+    CategoryIcon(
+      categoryIconData: CategoryIconData(
+        iconDataCodepoint: Icons.restaurant.codePoint,
+        label: 'Food & Drinks',
+        colorValue: Colors.pink.value,
+      ),
     ),
-    const CategoryIcon(
-      icon: Icons.shopping_cart,
-      label: 'Shopping',
-      color: Colors.cyan,
+    CategoryIcon(
+      categoryIconData: CategoryIconData(
+        iconDataCodepoint: Icons.local_gas_station.codePoint,
+        label: 'Fuel',
+        colorValue: Colors.orange.value,
+      ),
     ),
-    const CategoryIcon(
-      icon: Icons.work,
-      label: 'Travel',
-      color: Colors.purple,
+    CategoryIcon(
+      categoryIconData: CategoryIconData(
+        iconDataCodepoint: Icons.medical_services.codePoint,
+        label: 'Health',
+        colorValue: Colors.yellow.shade600.value,
+      ),
     ),
-    const CategoryIcon(
-      icon: Icons.add,
-      label: 'Add category',
-      color: Colors.red,
+    CategoryIcon(
+      categoryIconData: CategoryIconData(
+        iconDataCodepoint: Icons.more_horiz.codePoint,
+        label: 'Others',
+      ),
+    ),
+    CategoryIcon(
+      categoryIconData: CategoryIconData(
+        iconDataCodepoint: Icons.shopping_cart.codePoint,
+        label: 'Shopping',
+        colorValue: Colors.cyan.value,
+      ),
+    ),
+    CategoryIcon(
+      categoryIconData: CategoryIconData(
+        iconDataCodepoint: Icons.work.codePoint,
+        label: 'Travel',
+        colorValue: Colors.purple.value,
+      ),
+    ),
+    CategoryIcon(
+      categoryIconData: CategoryIconData(
+        iconDataCodepoint: Icons.add.codePoint,
+        label: 'Add category',
+        colorValue: Colors.red.value,
+      ),
     ),
   ];
 
@@ -280,12 +286,17 @@ class _AddExpenseDialogState extends State<AddExpenseDialog>
                   children: List.generate(
                     categories.length,
                     (index) => CategoryIcon(
-                      icon: categories[index].icon,
-                      label: categories[index].label,
-                      color: categories[index].color,
-                      backgroundColor: selectedCategoryIndex == index
-                          ? Colors.grey.shade300
-                          : null,
+                      categoryIconData: CategoryIconData(
+                        iconDataCodepoint: categories[index]
+                            .categoryIconData
+                            .iconDataCodepoint,
+                        colorValue:
+                            categories[index].categoryIconData.colorValue,
+                        label: categories[index].categoryIconData.label,
+                        backgroundColorValue: selectedCategoryIndex == index
+                            ? Colors.grey.shade300.value
+                            : null,
+                      ),
                       onTap: () {
                         setState(() {
                           selectedCategoryIndex = index;
