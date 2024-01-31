@@ -1,53 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum AppTheme { Light, Dark }
-
 class ThemeManager with ChangeNotifier {
-  late ThemeData _themeData;
-  late AppTheme _currentTheme;
+  ThemeMode themeMode;
 
-  ThemeManager() {
-    _currentTheme = AppTheme.Light;
-    _themeData = ThemeData.light(useMaterial3: true); // Set the default theme
-    _loadTheme();
-  }
+  ThemeData lightMode = ThemeData.light(useMaterial3: true);
+  ThemeData darkMode = ThemeData.dark(useMaterial3: true);
 
-  AppTheme get currentTheme => _currentTheme;
-  ThemeData get themeData => _themeData;
+  ThemeManager({required this.themeMode});
 
-  get darkThemeData => null;
+  static const int defaultThemeIndex = 0;
 
-  get currentThemeMode => null;
+  static const Map<int, ThemeMode> modeMapper = {
+    0: ThemeMode.light,
+    1: ThemeMode.dark,
+    2: ThemeMode.system,
+  };
 
-  void _loadTheme() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int themeIndex = prefs.getInt('theme') ?? 0;
-    _currentTheme = AppTheme.values[themeIndex];
-    _applyTheme();
-  }
-
-  void _applyTheme() {
-    switch (_currentTheme) {
-      case AppTheme.Light:
-        _themeData = ThemeData.light(useMaterial3: true);
-        break;
-      case AppTheme.Dark:
-        _themeData = ThemeData.dark(useMaterial3: true);
-        break;
-    }
+  void setThemeMode(ThemeMode selectedMode) {
+    themeMode = selectedMode;
+    _saveThemeModePreference();
     notifyListeners();
   }
 
-  void toggleTheme() {
-    _currentTheme =
-    _currentTheme == AppTheme.Light ? AppTheme.Dark : AppTheme.Light;
-    _applyTheme();
-    _saveThemePreference();
+  void _saveThemeModePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('theme', themeIndex());
   }
 
-  void _saveThemePreference() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('theme', _currentTheme.index);
+  int themeIndex() {
+    for (int index in modeMapper.keys) {
+      if (themeMode == modeMapper[index]) return index;
+    }
+    return defaultThemeIndex;
   }
 }
